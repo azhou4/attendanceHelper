@@ -116,3 +116,54 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
+
+
+// S3 Storage!
+// 1. import ask persistence adapter
+const persistenceAdapter = require('ask-sdk-s3-persistence-adapter');
+
+// 2. add the persistence adapter to your skill builder
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+...
+        SesssionEndedRequestHandler
+    )
+    .addErrorHandlers(ErrorHandler)
+    .withPersistenceAdapter(
+        new persistenceAdapter.S3PersistenceAdapter({bucketName:process.env.S3_PERSISTENCE_BUCKET})
+    );
+    .lambda();
+
+// 3. sample handler to save attributes
+async handle(handlerInput){
+
+    const attributesManager = handlerInput.attributesManager;
+    let s3Attributes = {"counter":10};
+    attributesManager.setPersistentAttributes(s3Attributes);
+    await attributesManager.savePersistentAttributes();
+
+    let speechOutput = `Hi there, Hello World! Your saved counter is ${s3Attributes.counter}`;
+
+    return handlerInput.responseBuilder
+        .speak(speechOutput)
+        .getResponse();
+},
+
+// 4. sample handler to read attributes
+async handle(handlerInput){
+
+    const attributesManager = handlerInput.attributesManager;
+    const s3Attributes = await attributesManager.getPersistentAttributes() || {};
+    console.log('s3Attributes is: ', s3Attributes);
+
+    const counter = s3Attributes.hasOwnProperty('counter')? s3Attributes.counter : 0;
+
+    let speechOutput = `Hi there, Hello World! Your counter is ${counter}`;
+
+    return handlerInput.responseBuilder
+        .speak(speechOutput)
+        .getResponse();
+},
+
+// Storage ends here
