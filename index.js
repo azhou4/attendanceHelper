@@ -5,41 +5,45 @@ const Alexa = require('ask-sdk-core');
 
 const listOfStudents = {
     "Elena": {
+        name: "Elena",
         "contact": {
             "email": "jjgg411@gmail.com",
             "phone": "7573104372"
         },
-        "attendance": {
+        attendance: {
             "06/03/2019": true,
             "06/04/2019": false
         }        
     },
     "Amy": {
+        name: "Amy",
         "contact": {
             "email": "jjgg411@gmail.com",
             "phone": "7573104372"
         },
-        "attendance": {
+        attendance: {
             "06/03/2019": true,
             "06/04/2019": true
         } 
     },
     "Laurel": {
+        name: "Laurel",
         "contact": {
             "email": "jjgg411@gmail.com",
             "phone": "7573104372"
         },
-        "attendance": {
+        attendance: {
             "06/03/2019": false,
             "06/04/2019": false
         } 
     },    
     "Jenny": {
+        name: "Jenny",
         "contact": {
             "email": "jjgg411@gmail.com",
             "phone": "7573104372"
         },
-        "attendance": {
+        attendance: {
             "06/03/2019": false,
             "06/04/2019": true
         } 
@@ -71,8 +75,8 @@ const SendReportIntentHandler = {
         var yyyy = today.getFullYear();
         var date_string = mm + '/' + dd + '/' + yyyy;
         for (var student in listOfStudents) {
-            if (!student.attendance.date_string) {
-                
+            if (!student.attendance[date_string]) {
+                <speak>{student.name}</speak>
             }
         }
         const speechText = 'Report Sent';
